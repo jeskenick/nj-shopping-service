@@ -2,8 +2,10 @@ package com.example.njshoppingservice.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 // import java.util.Optional;
 // import java.util.UUID;
+import java.util.UUID;
 
 import com.example.njshoppingservice.model.Summary;
 
@@ -19,6 +21,20 @@ public class FakeSummaryDataAccessService implements SummaryDao {
     public List<Summary> selectAllOrders() {
         // TODO Auto-generated method stub
         return DB;
+    }
+
+    @Override
+    public int insertOrder(Summary summary) {
+        DB.add(summary);
+        return 1;
+    }
+
+    @Override
+    public Optional<Summary> selectOrderById(UUID id) {
+        // TODO Auto-generated method stub
+        return DB.stream()
+                    .filter(summary -> summary.getId().equals(id))
+                    .findFirst();
     }
 
 }
