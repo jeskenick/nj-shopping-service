@@ -24,33 +24,35 @@ import org.springframework.stereotype.Service;
 @Service
 public class SummaryService {
 
-    // private final SummaryDao summaryDao;
+    private final SummaryDao summaryDao;
     
-    // @Autowired
-    // public SummaryService(@Qualifier("fakeDao") SummaryDao summaryDao) {
-    //     this.summaryDao = summaryDao;
-    // }
+    @Autowired
+    public SummaryService(@Qualifier("fakeDao") SummaryDao summaryDao) {
+        this.summaryDao = summaryDao;
+    }
 
-    public List<Summary> getAllOrders(Order order){
-        List<Summary> responseList = new ArrayList<>();
+    public Summary addOrders(Order order){
         final Summary response = new Summary(null, null, null, null, null, 0, 0);
-        final BigDecimal applePrice = new BigDecimal(0.60);
-        final BigDecimal orangePrice = new BigDecimal(0.25);
 
         response.setId(UUID.randomUUID());
         response.setDate(new Date());
-
-
         response.setTotalCostApples(appleOffers(order.getNumApples()));
-
         response.setTotalCostOranges(orangeOffers(order.getNumOranges()));
-
         response.setTotalCost(appleOffers(order.getNumApples()).add(orangeOffers(order.getNumOranges())));
-
         response.setTotalOrangesOrd(order.getNumOranges());
         response.setTotalApplesOrd(order.getNumApples());
-        responseList.add(response);
-        return responseList;
+
+        return response;
+    }
+
+    public Summary insertLastest(Order order){
+        final Summary response = addOrders(order);
+        summaryDao.insertOrder(response);
+        return response;
+    }
+
+    public List<Summary> getAllOrders(){
+        return summaryDao.selectAllOrders();
     }
 
     public BigDecimal appleOffers(int itemQuantity){
@@ -100,6 +102,10 @@ public class SummaryService {
             return offerTotal.add(orangePrice.multiply(BigDecimal.valueOf(discountQuantity))).setScale(2, RoundingMode.UP);
         }
         return offerTotal.setScale(2, RoundingMode.UP);
+    }
+
+    public Optional<Summary> getOrderById(UUID id){
+        return summaryDao.selectOrderById(id);
     }
     
 }

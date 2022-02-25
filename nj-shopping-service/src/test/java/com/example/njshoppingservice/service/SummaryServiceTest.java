@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class SummaryServiceTest {
     @Test
     void testAppleItemPrice() {
-        SummaryService service = new SummaryService();
+        SummaryService service = new SummaryService(null);
         BigDecimal expected = new BigDecimal(0.60).setScale(2, RoundingMode.UP);
         int quantity = 2;
 
@@ -23,7 +23,7 @@ public class SummaryServiceTest {
 
     @Test
     void testOrangeItemPrice() {
-        SummaryService service = new SummaryService();
+        SummaryService service = new SummaryService(null);
         BigDecimal expected = new BigDecimal(0.50).setScale(2, RoundingMode.UP);
         int quantity = 2;
 
