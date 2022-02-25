@@ -23,10 +23,10 @@ public class SummaryServiceGetAllTest {
 
 
         expectedResponse.setTotalApplesOrd(2);
-        expectedResponse.setTotalCostApples(new BigDecimal(1.20).setScale(2, RoundingMode.UP));
+        expectedResponse.setTotalCostApples(new BigDecimal(0.60).setScale(2, RoundingMode.UP));
         expectedResponse.setTotalOrangesOrd(1);
         expectedResponse.setTotalCostOranges(new BigDecimal(0.25).setScale(2, RoundingMode.UP));
-        expectedResponse.setTotalCost(new BigDecimal(1.45).setScale(2, RoundingMode.UP));
+        expectedResponse.setTotalCost(new BigDecimal(0.85).setScale(2, RoundingMode.UP));
         expected.add(expectedResponse);
 
         List<Summary> actual = service.getAllOrders(order);

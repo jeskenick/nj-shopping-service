@@ -39,18 +39,67 @@ public class SummaryService {
 
         response.setId(UUID.randomUUID());
         response.setDate(new Date());
-        response.setTotalCostApples(itemPrice(applePrice, order.getNumApples()));
-        response.setTotalCostOranges(itemPrice(orangePrice, order.getNumOranges()));
+
+
+        response.setTotalCostApples(appleOffers(order.getNumApples()));
+
+        response.setTotalCostOranges(orangeOffers(order.getNumOranges()));
+
+        response.setTotalCost(appleOffers(order.getNumApples()).add(orangeOffers(order.getNumOranges())));
+
         response.setTotalOrangesOrd(order.getNumOranges());
         response.setTotalApplesOrd(order.getNumApples());
-        response.setTotalCost(itemPrice(applePrice, order.getNumApples()).add(itemPrice(orangePrice, order.getNumOranges())));
         responseList.add(response);
         return responseList;
     }
 
-    public BigDecimal itemPrice(BigDecimal itemPrice, int quantity){
-        BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(quantity));
-        return itemTotal.setScale(2, RoundingMode.UP);
+    public BigDecimal appleOffers(int itemQuantity){
+        // • buy one get one free on Apples 
+        final BigDecimal applePrice = new BigDecimal(0.60).setScale(2, RoundingMode.UP); 
+        BigDecimal offerTotal = new BigDecimal(0).setScale(2, RoundingMode.UP);
+
+        if(itemQuantity == 0){
+            return offerTotal;
+        }else if(itemQuantity <= 2){
+            return offerTotal.add(applePrice);
+        }else if(itemQuantity % 2 == 0 && itemQuantity > 2){
+            int discountQuantity = 0;
+            discountQuantity = itemQuantity / 2;
+            return offerTotal.add(applePrice.multiply(BigDecimal.valueOf(discountQuantity))).setScale(2, RoundingMode.UP);
+        }else if(itemQuantity % 2 == 1 && itemQuantity > 2){
+            int discountQuantity = 0;
+            discountQuantity = 1 +(itemQuantity / 2);
+            return offerTotal.add(applePrice.multiply(BigDecimal.valueOf(discountQuantity))).setScale(2, RoundingMode.UP);
+        }
+        return offerTotal.setScale(2, RoundingMode.UP);
+    }
+
+
+    public BigDecimal orangeOffers(int itemQuantity){
+        // • 3 for the price of 2 on Oranges  
+        final BigDecimal orangePrice = new BigDecimal(0.25).setScale(2, RoundingMode.UP);
+        BigDecimal offerTotal = new BigDecimal(0).setScale(2, RoundingMode.UP);
+
+        if(itemQuantity == 0){
+            return offerTotal;
+        } else if(itemQuantity < 3){
+            return offerTotal.add(orangePrice.multiply(BigDecimal.valueOf(itemQuantity))).setScale(2, RoundingMode.UP);
+        } else if(itemQuantity % 3 == 0){
+            int subDiscountQuantity = 0;
+            int discountQuantity = 0;
+            subDiscountQuantity = (itemQuantity / 3) + itemQuantity % 3 ;
+            discountQuantity = itemQuantity - subDiscountQuantity;
+           
+            return offerTotal.add(orangePrice.multiply(BigDecimal.valueOf(discountQuantity))).setScale(2, RoundingMode.UP);
+        } else if(itemQuantity % 3 > 0) {
+            int discountQuantity;
+            double disQual;
+            disQual = Math.ceil(2.0 * itemQuantity / 3.0);
+            discountQuantity = (int) Math.round(disQual);
+    
+            return offerTotal.add(orangePrice.multiply(BigDecimal.valueOf(discountQuantity))).setScale(2, RoundingMode.UP);
+        }
+        return offerTotal.setScale(2, RoundingMode.UP);
     }
     
 }
